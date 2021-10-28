@@ -8,6 +8,7 @@
 source('dataprep.R')
 source('plot_utils.R')
 
+library(writexl)
 library(kableExtra)
 library(knitr)
 
@@ -282,7 +283,7 @@ ggsave('articleplots/forecast_vs_actual.png', p_actual_forec, width = 8, height 
 #     )
 # ggsave('articleplots/appendix_forecast_vs_actual_all.png', p_actual_forec_apdx, width = 8, height = 34)
 
-#### plot: trends in forecast deviations categorized ####
+#### plot and table: trends in forecast deviations categorized (table 3 in paper) ####
 
 brewerpal <- RColorBrewer::brewer.pal(3, 'Dark2')
 gender_pal <- c(brewerpal[1], brewerpal[2])    # female, male
@@ -299,6 +300,8 @@ categorize_param <- function(x, p, thresh = 0.05) {
 paramlevels <- c('up', 'const', 'down')
 latexarrows_icept <- c('$\\uparrow$', '$\\rightarrow$', '$\\downarrow$')
 latexarrows_slope <- c('$\\nearrow$', '$\\rightarrow$', '$\\searrow$')
+unicodearrows_icept <- c('↑', '→', '↓')
+unicodearrows_slope <- c('⬈', '→', '⬊')
 
 cntry_gender_trends <- group_by(forecastdiff_cntrs, country_code, gender) %>% group_modify(~ {
     grpdata <- .
@@ -361,15 +364,26 @@ cntry_gender_trends_tabledata <- select(cntry_gender_trends, country_code, gende
   left_join(select(countrycode::codelist, iso2c, continent), by = c('country_code' = 'iso2c')) %>%
   #arrange(group_id, country_name) %>%
   arrange(country_name, group_id) %>%
-  select(-c(group_id, country_code, continent)) %>%
+  select(-c(group_id, country_code, continent))
+
+cntry_gender_trends_tabledata_unicode <- cntry_gender_trends_tabledata %>%
+  mutate(icept_categ_lvl_female = unicodearrows_icept[icept_categ_lvl_female],
+         slope_categ_lvl_female = unicodearrows_slope[slope_categ_lvl_female],
+         icept_categ_lvl_male = unicodearrows_icept[icept_categ_lvl_male],
+         slope_categ_lvl_male = unicodearrows_slope[slope_categ_lvl_male])
+cntry_gender_trends_tabledata_unicode
+
+#write_xlsx(cntry_gender_trends_tabledata_unicode, '~/tmp/table_trends.xlsx')
+
+cntry_gender_trends_tabledata_latex <- cntry_gender_trends_tabledata %>%
   mutate(icept_categ_lvl_female = latexarrows_icept[icept_categ_lvl_female],
          slope_categ_lvl_female = latexarrows_slope[slope_categ_lvl_female],
          icept_categ_lvl_male = latexarrows_icept[icept_categ_lvl_male],
          slope_categ_lvl_male = latexarrows_slope[slope_categ_lvl_male])
 
-cntry_gender_trends_tabledata
+cntry_gender_trends_tabledata_latex
 
-kable(cntry_gender_trends_tabledata,
+kable(cntry_gender_trends_tabledata_latex,
       booktabs = TRUE,
       caption = 'Categorization of trends per country',
       col.names = c(rep(c('intercept', 'slope'), 2), ''),
