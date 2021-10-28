@@ -4,6 +4,10 @@ September 2021, Lena Hipp <lena.hipp@wzb.eu> and Markus Konrad <markus.konrad@wz
 
 This repository contains replication code for the paper *Has Covid-19 increased gender inequalities in professional advancement? Cross-country evidence on productivity differences between male and female software developers* by [Lena Hipp](https://wzb.eu/de/personen/lena-hipp) and [Markus Konrad](https://wzb.eu/de/personen/markus-konrad), published in the [Journal of Family Research](https://ubp.uni-bamberg.de/jfr/).
 
+Citation: 
+
+Hipp, Lena/Konrad, Markus (2021): "Has Covid-19 Increased Gender Inequalities in Professional Advancement? Cross-Country Evidence on Productivity Differences between Male and Female Software Developers". In: JFR - Journal of Family Research, advance access, 30.09.2021, online: http://dx.doi.org/10.20377/jfr-697.
+
 The code is divided into two parts:
 
 1. `collection` contains mainly Python code used for data collection
